@@ -1,0 +1,30 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('@/views/HomeView.vue')
+    },
+    {
+      path: '/new',
+      name: 'new',
+      component: () => import('@/views/NewRecordView.vue')
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('@/views/HistoryAppointmentsView.vue')
+    },
+    {
+      path: '/announcement/:id',
+      name: 'announcement',
+      props: true,
+      component: () => import('@/views/AnnouncementView.vue')
+    }
+  ]
+})
+
+export default router
