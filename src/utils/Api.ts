@@ -6,4 +6,12 @@ const Api = axios.create({
   xsrfHeaderName: 'X-CSRFToken'
 })
 
+enum ReqState {
+  IDLE,
+  PENDING,
+  SUCCESS,
+  ERROR
+}
+
 export default Api
+export { ReqState }

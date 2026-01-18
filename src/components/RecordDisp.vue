@@ -31,12 +31,15 @@
 
     <n-space justify="space-between">
       <n-button @click="() => $emit('prev')">上一步</n-button>
-      <n-button @click="handleSubmit" type="primary">下一步</n-button>
+      <n-button @click="handleSubmit" type="primary" :loading="submitStatus === ReqState.PENDING">提交</n-button>
     </n-space>
   </n-space>
 </template>
 
 <script setup lang="ts">
+import Api, { ReqState } from '@/utils/Api'
+import { ref } from 'vue'
+
 const model = defineModel<{
   realname: string
   phone_num: string
@@ -49,8 +52,21 @@ const model = defineModel<{
 
 const emit = defineEmits(["prev", "next"])
 
-const handleSubmit = () => {
-  emit('next')
+const submitStatus = ref<ReqState>(ReqState.IDLE)
+
+const handleSubmit = async () => {
+  try {
+    submitStatus.value = ReqState.PENDING
+    await Api.post('/api/wechat/', {
+      ...model.value
+    })
+    submitStatus.value = ReqState.SUCCESS
+    emit('next')
+  }
+  catch (e) {
+    console.error('提交失败', e)
+    submitStatus.value = ReqState.ERROR
+  }
 }
 </script>
 
