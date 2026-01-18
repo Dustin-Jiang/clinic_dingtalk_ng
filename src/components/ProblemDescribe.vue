@@ -3,7 +3,7 @@
     <RepairComment label="问题描述" :options="store.probDescs!" v-model:value="probDescs" />
     <n-form ref="probFormRef" :rules="probValueRule" :model="probValue">
       <n-form-item label="电脑型号" path="modelName">
-        <n-input v-model:value="probValue.modelName" placeholder="若不清楚, 可查看机身底部铭文" />
+        <n-input v-model:value="probValue.modelName" placeholder="若不清楚, 可查看机身底部铭文" :autofocus="false" />
       </n-form-item>
       <n-space justify="space-between">
         <div></div>

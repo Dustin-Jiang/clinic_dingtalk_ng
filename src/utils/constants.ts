@@ -27,67 +27,67 @@ export const enum RecordStatus {
 export const repairMethods = [
   {
     label: '硬件',
-    value: '硬件',
+    value: 'hardware',
     children: [
       {
         label: '清灰',
-        value: '清灰'
+        value: 'hardware.dust'
       },
       {
         label: '换硅脂',
-        value: '换硅脂'
+        value: 'hardware.siliconGrease'
       },
       {
         label: '安装硬盘',
-        value: '安装硬盘'
+        value: 'hardware.installDisk'
       },
       {
         label: '更换部件',
-        value: '更换部件'
+        value: 'hardware.replacePart'
       }
     ]
   },
   {
     label: '系统',
-    value: '系统',
+    value: 'system',
     children: [
       {
         label: '重装',
-        value: '重装'
+        value: 'system.reinstall'
       },
       {
         label: '系统还原',
-        value: '系统还原'
+        value: 'system.restore'
       },
       {
         label: '清理文件',
-        value: '清理文件'
+        value: 'system.cleaning'
       },
       {
         label: '更新驱动',
-        value: '更新驱动'
+        value: 'system.updateDriver'
       }
     ]
   },
   {
     label: '软件',
-    value: '软件',
+    value: 'software',
     children: [
       {
         label: '安装',
-        value: '安装'
+        value: 'software.install'
       },
       {
         label: '卸载',
-        value: '卸载'
+        value: 'software.uninstall'
       },
       {
         label: '清理残留',
-        value: '清理残留'
+        value: 'software.cleanup'
       },
       {
         label: '配置',
-        value: '配置'
+        value: 'software.config'
       }
     ]
   },
@@ -144,7 +144,7 @@ export const probDescs = [
   },
   {
     label: '系统',
-    value: '系统',
+    value: 'system',
     children: [
       {
         label: '安装',
@@ -184,11 +184,11 @@ export const probDescs = [
   },
   {
     label: '软件',
-    value: '软件',
+    value: 'software',
     children: [
       {
         label: '安装',
-        value: '安装',
+        value: 'software.install',
         children: [
           {
             label: 'AutoCAD',
@@ -218,11 +218,11 @@ export const probDescs = [
       },
       {
         label: '卸载',
-        value: '卸载'
+        value: 'software.uninstall'
       },
       {
         label: '配置',
-        value: '配置',
+        value: 'software.config',
         children: [
           {
             label: 'C & C++ 运行环境',

@@ -1,13 +1,23 @@
 <template>
   <n-form :rules="rules" :model="model" ref="formRef">
     <n-form-item :label="label" path="selection">
-      <n-cascader multiple clearable filterable check-strategy="child" expand-trigger="hover" :show-path="true"
-        :cascade="false" :options="options" placeholder="可多选, 输入以筛选" v-model:value="model.selection" :filter="(pattern: string, option: CascaderOption, path: CascaderOption[]) =>
-          optionFilter(pattern, option)" />
+      <n-space vertical style="width: 100%">
+        <n-input v-model:value="filterPattern" placeholder="输入以搜索">
+          <template #prefix>
+            <n-icon>
+              <SearchFilled />
+            </n-icon>
+          </template>
+        </n-input>
+        <n-tree :block-line="true" :block-node="true" :data="data" expand-on-click checkable
+          :show-irrelevant-nodes="false" :override-default-node-click-behavior="override" check-strategy="child"
+          style="width: 100%" @update:checkedKeys="updateCheckedKeys" :pattern="filterPattern" :filter="(pattern: string, option: CascaderOption, path: CascaderOption[]) =>
+            optionFilter(pattern, option)" />
+      </n-space>
     </n-form-item>
     <n-collapse-transition :show="isOtherSelected">
       <n-form-item :label="'其他' + label" path="detail">
-        <n-input type="textarea" placeholder="细说" v-model:value="model.detail" />
+        <n-input type="textarea" placeholder="详细描述问题, 方便我们更准确判断问题" v-model:value="model.detail" />
       </n-form-item>
     </n-collapse-transition>
   </n-form>
@@ -15,9 +25,10 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from "vue"
-import type { FormItemRule, NForm } from "naive-ui"
+import type { FormItemRule, NForm, TreeOption, TreeOverrideNodeClickBehavior } from "naive-ui"
 import type API from "@/store/api"
 import { watchEffect } from "vue";
+import SearchFilled from "@vicons/material/SearchFilled"
 
 const result = defineModel<IRepairComment>("value")
 const labels = new Map<string, string>()
@@ -26,6 +37,19 @@ const props = defineProps<{
   label: string,
   options: API.RecordDesc[]
 }>()
+
+const convertOptions = (options: API.RecordDesc[]): TreeOption[] => {
+  return options.map((v) => {
+    return {
+      label: v.label,
+      key: v.value,
+      children: v.children ? convertOptions(v.children) : undefined,
+      checkboxDisabled: v.children ? true : false
+    }
+  })
+}
+
+const data = ref<TreeOption[]>(convertOptions(props.options))
 
 const model = ref<{
   selection: string[],
@@ -39,7 +63,7 @@ const formRef = ref<typeof NForm | null>(null)
 
 onMounted(() => {
   setLabels(props.options)
-  console.debug("labels: ", labels)
+  console.debug(props.options)
 })
 
 const setLabels = (options: API.RecordDesc[], prefix: string = "") => {
@@ -79,6 +103,13 @@ const validate = computed(() => {
   }
   return model.value.selection.length > 0
 })
+
+const override: TreeOverrideNodeClickBehavior = ({ option }) => {
+  if (option.children) {
+    return 'toggleExpand'
+  }
+  return 'default'
+}
 
 watchEffect(() => {
   result.value!.value = commentRaw.value.join(", ")
@@ -121,7 +152,20 @@ type CascaderOption = {
   children?: CascaderOption[]
 }
 
+const filterPattern = ref<string>("")
 const optionFilter = (pattern: string, option: CascaderOption) => {
   return option.label.toLowerCase().includes(pattern.toLowerCase())
+}
+
+const updateCheckedKeys = (
+  keys: Array<string | number>,
+  options: Array<TreeOption | null>,
+  meta: {
+    node: TreeOption | null
+    action: 'check' | 'uncheck'
+  }
+) => {
+  console.log('updateCheckedKeys', keys, options, meta)
+  model.value.selection = keys.map(v => v.toString())
 }
 </script>

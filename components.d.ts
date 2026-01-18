@@ -49,6 +49,7 @@ declare module 'vue' {
     NText: typeof import('naive-ui')['NText']
     NTextarea: typeof import('naive-ui')['NTextarea']
     NThing: typeof import('naive-ui')['NThing']
+    NTree: typeof import('naive-ui')['NTree']
     PersonalInfo: typeof import('./src/components/PersonalInfo.vue')['default']
     ProblemDescribe: typeof import('./src/components/ProblemDescribe.vue')['default']
     RecordDisp: typeof import('./src/components/RecordDisp.vue')['default']
