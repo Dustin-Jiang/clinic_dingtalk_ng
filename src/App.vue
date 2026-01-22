@@ -1,11 +1,13 @@
 <template>
   <n-config-provider :theme="theme" :locale="zhCN" :date-locale="dateZhCN">
     <n-global-style />
-    <n-message-provider>
-      <n-element style="height: 100vh; width: 100vw; overflow: hidden">
-        <RouterView />
-      </n-element>
-    </n-message-provider>
+    <n-modal-provider>
+      <n-message-provider>
+        <n-element style="height: 100vh; width: 100vw; overflow: hidden">
+          <RouterView />
+        </n-element>
+      </n-message-provider>
+    </n-modal-provider>
   </n-config-provider>
 </template>
 

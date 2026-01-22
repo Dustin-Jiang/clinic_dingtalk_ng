@@ -1,33 +1,6 @@
 <template>
   <n-space vertical>
-    <n-element>
-      <span> 姓名 </span>
-      {{ model?.realname }}
-    </n-element>
-    <n-element>
-      <span> 电话号码 </span>
-      {{ model?.phone_num }}
-    </n-element>
-    <n-element>
-      <span> 预约时间 </span>
-      {{ model?.appointment_time }}
-    </n-element>
-    <n-element>
-      <span> 地点 </span>
-      {{ model?.campus }}
-    </n-element>
-    <n-element>
-      <span> 电脑型号 </span>
-      {{ model?.model }}
-    </n-element>
-    <n-element>
-      <span> 问题描述 </span>
-      {{ model?.description }}
-    </n-element>
-    <n-element v-if="model?.password">
-      <span> 开机密码 </span>
-      {{ model?.password }}
-    </n-element>
+    <RecordDetail v-model:value="model" />
 
     <n-space justify="space-between">
       <n-button @click="() => $emit('prev')">上一步</n-button>

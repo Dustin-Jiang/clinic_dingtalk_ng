@@ -19,12 +19,6 @@
         }
       ">编辑预约</n-button>
     </div>
-    <div v-if="isRejectReasonVisible">
-      <div>
-        <n-text strong>拒绝原因</n-text>
-      </div>
-      <n-text>{{ props.data!.reject_reason }}</n-text>
-    </div>
   </n-space>
 </template>
 
@@ -56,11 +50,6 @@ const recordId = computed(() => {
 
 const recordUrl = computed(() => {
   return productionConfig.frontend.baseUrl + productionConfig.frontend.recordUrl + recordId.value
-})
-
-const isRejectReasonVisible = computed(() => {
-  return props.data!.status == RecordStatus.APPOINTMENT_REJECTED &&
-    !!props.data!.reject_reason
 })
 
 const isEditVisible = computed(() => {

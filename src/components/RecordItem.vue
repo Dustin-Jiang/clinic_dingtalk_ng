@@ -14,17 +14,27 @@
     <template #description> {{ props.data?.appointment_time }}</template>
     {{ props.data?.model }}
     <template #action>
-      <n-space>
-        <StatusBadge :status="props.data?.status!" />
-        <StatusBadge status="default" :text="props.data?.campus" />
+      <n-space vertical>
+        <n-space>
+          <StatusBadge :status="props.data?.status!" />
+          <StatusBadge status="default" :text="props.data?.campus" />
+        </n-space>
+        <n-button style="width: 100%;" @click="showDetail = true">详细信息</n-button>
       </n-space>
     </template>
   </n-thing>
+
+  <n-modal v-model:show="showDetail" preset="dialog" title="预约详细信息">
+    <template #header>
+      <div>预约详细信息</div>
+    </template>
+    <RecordDetail :value="props.data" />
+  </n-modal>
 </template>
 
 <script setup lang="tsx">
 import type API from '@/store/api'
-import { computed, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { RecordStatus } from '@/utils/constants'
 
@@ -36,6 +46,7 @@ import DoneFilled from '@vicons/material/DoneFilled'
 import CalendarMonthFilled from '@vicons/material/CalendarMonthFilled'
 import PersonOffFilled from '@vicons/material/PersonOffFilled'
 import HandyManFilled from '@vicons/material/HandyManFilled'
+import RecordDetail from './RecordDetail.vue'
 
 const props = defineProps({
   data: Object as PropType<API.Record>
@@ -68,4 +79,6 @@ const StatusAvatar = () => {
 
   if (status === RecordStatus.RESOLVING) return <HandyManFilled />
 }
+
+const showDetail = ref(false)
 </script>
