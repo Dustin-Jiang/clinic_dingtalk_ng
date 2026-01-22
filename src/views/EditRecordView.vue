@@ -135,7 +135,7 @@ const restoreSelection = (desc: string) => {
     return ""
   }
   let options = store.probDescs!
-  let key: string = ""
+  let key: string | null = null
   desc.split(' / ').forEach((label) => {
     const option = options.find((o) => o.label === label)
     if (option) {
@@ -145,6 +145,11 @@ const restoreSelection = (desc: string) => {
       }
     }
   })
+  // If no key found, it means it's an "other" description
+  if (!key) {
+    probDescs.value.detail.probDescRaw.detail = desc
+    return "other"
+  }
   return key
 }
 
@@ -156,10 +161,9 @@ const restoreRecord = () => {
   probDescs.value.modelName = record.value.model
   probDescs.value.probDesc = record.value.description
   probDescs.value.detail.probDescValue = record.value.description
-  probDescs.value.detail.probDescRaw = {
-    selection: record.value.description.split(', ').map((desc) => restoreSelection(desc)),
-    detail: ''
-  }
+  probDescs.value.detail.probDescRaw.detail = ""
+  probDescs.value.detail.probDescRaw.selection = record.value.description.split(', ').map((desc) => restoreSelection(desc))
+
   console.debug("restored probDescs: ", probDescs.value)
   personalInfo.value = {
     name: record.value.realname,
