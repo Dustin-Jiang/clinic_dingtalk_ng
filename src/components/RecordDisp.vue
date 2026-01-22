@@ -71,7 +71,8 @@ const handleSubmit = async () => {
   }
   catch (e) {
     console.error('提交失败', e)
-    message.error(`提交失败，${e}`)
+    // @ts-ignore
+    message.error(`提交失败，${e?.response?.data?.msg ?? e.message ?? e}`)
     submitStatus.value = ReqState.ERROR
   }
 }

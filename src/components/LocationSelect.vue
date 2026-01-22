@@ -24,28 +24,8 @@
 
       <n-form-item label="选择地点" required>
         <n-list hoverable clickable style="width: 100%" bordered v-if="locations && locations?.length > 0">
-          <n-list-item v-for="(location, idx) in locations" v-bind:key="idx" @click="() => {
-            if (choice === location?.campus) choice = undefined
-            else choice = location?.campus
-          }">
-            <n-thing :title="location?.campus">
-              <template #description>
-                <n-space>
-                  <n-tag size="small" type="success" :bordered="false"> {{ location?.title }} </n-tag>
-                  <n-tag size="small" :bordered="false"> {{ location?.startTime }} - {{ location?.endTime }} </n-tag>
-                </n-space>
-              </template>
-              <p>地址: {{ address.get(location!.campus) }}</p>
-              <p>容量: {{ `${location?.count} / ${location?.capacity}` }}</p>
-            </n-thing>
-            <template #suffix>
-              <n-collapse-transition :show="location?.campus === choice">
-                <n-icon style="height: 1.6rem; width: 1.6rem; ">
-                  <CheckCircleFilled style="font-size: 1.6rem; color: var(--primary-color); " />
-                </n-icon>
-              </n-collapse-transition>
-            </template>
-          </n-list-item>
+          <LocationItem v-for="(location, idx) in locations" :key="idx" :location="location!" :idx="idx"
+            v-model:value="choice" :disabled="location?.count == location?.capacity" />
         </n-list>
         <n-empty v-else style="width: 100%;">暂无可用地点</n-empty>
       </n-form-item>
@@ -59,14 +39,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import ArrowForwardFilled from "@vicons/material/ArrowForwardFilled"
 import ArrowBackFilled from "@vicons/material/ArrowBackFilled"
 import { computed } from "vue";
-import store from "@/store";
-import CheckCircleFilled from "@vicons/material/CheckCircleFilled";
+import store, { loadDateStatus } from "@/store";
 import { watch } from "vue";
 import { watchEffect } from "vue";
+import LocationItem from "./LocationItem.vue";
 
 const model = defineModel<{ date: string, location: string }>("value")
 
@@ -95,6 +75,10 @@ const setDateOffset = (offset: number) => {
   date.value = new Date(now.setDate(now.getDate() + offset)).getTime()
 }
 
+onMounted(async () => {
+  await loadDateStatus()
+})
+
 const locations = computed(() => {
   return store.dateStatus?.map((location) => {
     const now = new Date(date.value ?? '')
@@ -119,13 +103,6 @@ watch(date, (d, old) => {
   }
   return d
 })
-
-const address = new Map<string, string>()
-store.campuses?.forEach((campus) => {
-  address.set(campus.name, campus.address)
-})
-
-console.debug("address: ", address)
 
 const validate = computed(() => choice.value !== undefined)
 

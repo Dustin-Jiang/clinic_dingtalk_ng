@@ -233,7 +233,7 @@ export const probDescs = [
     ]
   },
   {
-    label: '其他',
+    label: '其他 - 详细描述',
     value: 'other'
   }
 ]

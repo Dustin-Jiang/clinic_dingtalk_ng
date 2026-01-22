@@ -13,14 +13,14 @@
 
     <div style="overflow: auto; padding: 8px; " v-if="loadingStatus === ReqState.SUCCESS">
       <n-steps :current="step" vertical>
-        <n-step title="描述问题">
+        <n-step title="阅读维修须知">
           <n-collapse-transition :show="step === 1">
-            <ProblemDescribe v-model:value="probDescs" @next="() => step++" />
+            <EULA @next="() => step++" />
           </n-collapse-transition>
         </n-step>
-        <n-step title="阅读维修须知">
+        <n-step title="描述问题">
           <n-collapse-transition :show="step === 2">
-            <EULA @prev="() => step--" @next="() => step++" />
+            <ProblemDescribe v-model:value="probDescs" @prev="() => step--" @next="() => step++" />
           </n-collapse-transition>
         </n-step>
         <n-step title="选择时间地点">
@@ -28,7 +28,7 @@
             <LocationSelect v-model:value="locationSelect" @prev="() => step--" @next="() => step++" />
           </n-collapse-transition>
         </n-step>
-        <n-step title="填写信息">
+        <n-step title="填写个人信息">
           <n-collapse-transition :show="step === 4">
             <PersonalInfo v-model:value="personalInfo" @prev="() => step--" @next="() => step++" />
           </n-collapse-transition>
@@ -117,12 +117,12 @@ const result = computed(() => {
     model: probDescs.value!.modelName,
     password: personalInfo.value!.password,
 
-    appointment_time: locationSelect.value!.date
+    appointment_time: locationSelect.value!.date as `${number}-${number}-${number}`
   }
 })
 
-const handleSubmit = () => {
-  return Api.post('/wechat/', {
+const handleSubmit = async () => {
+  return await Api.post('/wechat/', {
     ...result.value
   })
 }

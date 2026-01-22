@@ -2,7 +2,7 @@
   <MdPreview :modelValue="eula" class="heti" />
   <n-p>请仔细阅读上列声明 ({{ countDown }} / {{ WAIT_TIME }}s)</n-p>
   <n-space justify="space-between">
-    <n-button @click="() => $emit('prev')">上一步</n-button>
+    <div></div>
     <n-button @click="() => $emit('next')" :disabled="countDown < WAIT_TIME" type="primary">下一步</n-button>
   </n-space>
 </template>
@@ -17,9 +17,9 @@ import "heti/umd/heti.min.css"
 import store from '@/store';
 import { getAnnouncement } from '@/store/announcements';
 
-defineEmits(["prev", "next"])
+defineEmits(["next"])
 
-const WAIT_TIME = 1
+const WAIT_TIME = 10
 
 const countDown = ref(0)
 

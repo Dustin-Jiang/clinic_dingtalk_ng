@@ -12,6 +12,7 @@ declare module 'vue' {
     CreateAppointmentButton: typeof import('./src/components/CreateAppointmentButton.vue')['default']
     DateButtonGroup: typeof import('./src/components/DateButtonGroup.vue')['default']
     EULA: typeof import('./src/components/EULA.vue')['default']
+    LocationItem: typeof import('./src/components/LocationItem.vue')['default']
     LocationSelect: typeof import('./src/components/LocationSelect.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']

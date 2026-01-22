@@ -6,7 +6,7 @@
         <n-input v-model:value="probValue.modelName" placeholder="若不清楚, 可查看机身底部铭文" :autofocus="false" />
       </n-form-item>
       <n-space justify="space-between">
-        <div></div>
+        <n-button @click="() => $emit('prev')">上一步</n-button>
         <n-button type="primary" :disabled="!probStepFinished" @click="() => $emit('next')">下一步</n-button>
       </n-space>
     </n-form>
@@ -16,8 +16,7 @@
 <script setup lang="ts">
 import RepairComment from '@/components/RepairComment.vue'
 import store from '@/store';
-import { computed } from 'vue';
-import { ref, watchEffect } from "vue"
+import { computed, watch, ref, watchEffect } from 'vue';
 
 const model = defineModel<{
   modelName: string,
@@ -61,8 +60,7 @@ const probFormRef = ref<HTMLFormElement>();
 
 const probStepFinished = ref(false)
 
-watchEffect(() => {
-  console.debug("probStepFinished: ", probDescs.value.validate)
+const validate = () => {
   probFormRef.value?.validate((errors: any) => {
     if (!errors) {
       probStepFinished.value = probDescs.value.validate
@@ -71,7 +69,10 @@ watchEffect(() => {
       probStepFinished.value = false
     }
   })
-})
+}
+
+watch(() => probDescs.value.validate, validate)
+watch(() => probValue.value.modelName, validate)
 
 const value = computed(() => {
   return {
@@ -88,5 +89,5 @@ watchEffect(() => {
   model.value = value.value
 })
 
-defineEmits(["next"])
+defineEmits(["next", "prev"])
 </script>

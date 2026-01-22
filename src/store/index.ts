@@ -14,12 +14,16 @@ const store = reactive({
 
 const load = async () => {
   store.campuses = (await Api.get<API.Campus[]>('/campus/')).data
-  store.dateStatus = (await Api.get<API.DateStatus[]>('/date/')).data
+  loadDateStatus();
   loadUser();
 }
 
+const loadDateStatus = async () => {
+  store.dateStatus = (await Api.get<API.DateStatus[]>('/date/')).data
+}
+
 export default store
-export { load }
+export { load, loadDateStatus }
 
 //@ts-expect-error
 window.$store = store
