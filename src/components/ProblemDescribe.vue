@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import RepairComment from '@/components/RepairComment.vue'
 import store from '@/store';
-import { computed, watch, ref, watchEffect } from 'vue';
+import { computed, watch, ref, watchEffect, onMounted } from 'vue';
 
 const model = defineModel<{
   modelName: string,
@@ -73,6 +73,11 @@ const validate = () => {
 
 watch(() => probDescs.value.validate, validate)
 watch(() => probValue.value.modelName, validate)
+onMounted(() => {
+  if (model.value?.detail && model.value?.modelName) {
+    validate()
+  }
+})
 
 const value = computed(() => {
   return {
