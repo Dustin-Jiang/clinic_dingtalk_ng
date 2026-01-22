@@ -8,7 +8,7 @@
           <ArrowBackFilled style="font-size: 1.4rem" />
         </n-icon>
       </n-button>
-      <n-h1 style="padding: 0 8px">预约电脑诊所</n-h1>
+      <n-h1 style="padding: 0 8px">编辑预约</n-h1>
     </n-space>
 
     <div style="overflow: auto; padding: 8px; " v-if="loadingStatus === ReqState.SUCCESS">
@@ -18,33 +18,19 @@
             <ProblemDescribe v-model:value="probDescs" @next="() => step++" />
           </n-collapse-transition>
         </n-step>
-        <n-step title="阅读维修须知">
-          <n-collapse-transition :show="step === 2">
-            <EULA @prev="() => step--" @next="() => step++" />
-          </n-collapse-transition>
-        </n-step>
         <n-step title="选择时间地点">
-          <n-collapse-transition :show="step === 3">
+          <n-collapse-transition :show="step === 2">
             <LocationSelect v-model:value="locationSelect" @prev="() => step--" @next="() => step++" />
           </n-collapse-transition>
         </n-step>
         <n-step title="填写信息">
-          <n-collapse-transition :show="step === 4">
+          <n-collapse-transition :show="step === 3">
             <PersonalInfo v-model:value="personalInfo" @prev="() => step--" @next="() => step++" />
           </n-collapse-transition>
         </n-step>
         <n-step title="确认">
-          <n-collapse-transition :show="step === 5">
-            <RecordDisp v-model:value="result" @prev="() => step--" @next="() => step++" @submit="handleSubmit" />
-          </n-collapse-transition>
-        </n-step>
-        <n-step title="等待审核">
-          <n-collapse-transition :show="step === 6">
-            <n-result status="success" title="提交成功" description="若审核较慢，请直接按时前来">
-              <template #footer>
-                <n-button @click="router.back()">返回首页</n-button>
-              </template>
-            </n-result>
+          <n-collapse-transition :show="step === 4">
+            <RecordDisp v-model:value="result" @prev="() => step--" @next="router.back()" @submit="handleSubmit" />
           </n-collapse-transition>
         </n-step>
       </n-steps>
@@ -59,7 +45,6 @@ import ArrowBackFilled from '@vicons/material/ArrowBackFilled'
 import ProblemDescribe from '@/components/ProblemDescribe.vue'
 import PersonalInfo from '@/components/PersonalInfo.vue'
 import LocationSelect from '@/components/LocationSelect.vue'
-import EULA from '@/components/EULA.vue'
 import RecordDisp from '@/components/RecordDisp.vue'
 
 import { useRouter } from 'vue-router'
@@ -68,6 +53,9 @@ import store from '@/store'
 import { getProbDescs } from '@/store/probDescs'
 import { computed } from 'vue'
 import Api, { ReqState } from '@/utils/Api'
+import { parseRecordId } from '@/utils/record'
+import { getNextRecords, getRecords } from '@/store/record'
+import type API from '@/store/api'
 
 const router = useRouter()
 const step = ref(1)
@@ -83,7 +71,17 @@ const probDescs = ref<{
       detail: string
     }
   }
-}>()
+}>({
+  modelName: '',
+  probDesc: '',
+  detail: {
+    probDescValue: '',
+    probDescRaw: {
+      selection: [],
+      detail: ''
+    }
+  }
+})
 
 const personalInfo = ref<{
   name: string,
@@ -96,6 +94,12 @@ const locationSelect = ref<{ date: string, location: string }>({
   location: ''
 })
 
+const props = defineProps({
+  id: String
+})
+
+const record = ref<API.Record>()
+
 onMounted(async () => {
   if (!store.probDescs) {
     if (!await getProbDescs()) {
@@ -104,8 +108,69 @@ onMounted(async () => {
     }
   }
 
+  if (!store.records) {
+    await getRecords()
+  }
+  if (!store.probDescs) {
+    await getProbDescs()
+  }
+
+  while (!store.records?.find((r => {
+    return parseRecordId(r.url) === props.id
+  }))) {
+    await getNextRecords()
+  }
+
+  record.value = store.records!.find((r => {
+    return parseRecordId(r.url) === props.id
+  }))
+  restoreRecord()
+
+  console.debug("init probDescs", probDescs.value)
   loadingStatus.value = ReqState.SUCCESS
 })
+
+const restoreSelection = (desc: string) => {
+  if (!store.probDescs) {
+    return ""
+  }
+  let options = store.probDescs!
+  let key: string = ""
+  desc.split(' / ').forEach((label) => {
+    const option = options.find((o) => o.label === label)
+    if (option) {
+      key = option?.value
+      if (option.children) {
+        options = option.children
+      }
+    }
+  })
+  return key
+}
+
+const restoreRecord = () => {
+  if (!record.value) {
+    return
+  }
+  // console.debug("restoring record: ", record.value)
+  probDescs.value.modelName = record.value.model
+  probDescs.value.probDesc = record.value.description
+  probDescs.value.detail.probDescValue = record.value.description
+  probDescs.value.detail.probDescRaw = {
+    selection: record.value.description.split(', ').map((desc) => restoreSelection(desc)),
+    detail: ''
+  }
+  console.debug("restored probDescs: ", probDescs.value)
+  personalInfo.value = {
+    name: record.value.realname,
+    phone: record.value.phone_num,
+    password: record.value.password
+  }
+  locationSelect.value = {
+    date: record.value.appointment_time,
+    location: record.value.campus
+  }
+}
 
 const result = computed(() => {
   return {
@@ -113,8 +178,8 @@ const result = computed(() => {
     phone_num: personalInfo.value!.phone,
     campus: locationSelect.value!.location,
 
-    description: probDescs.value!.probDesc,
-    model: probDescs.value!.modelName,
+    description: probDescs.value.probDesc,
+    model: probDescs.value.modelName,
     password: personalInfo.value!.password,
 
     appointment_time: locationSelect.value!.date
@@ -122,7 +187,7 @@ const result = computed(() => {
 })
 
 const handleSubmit = () => {
-  return Api.post('/wechat/', {
+  return Api.put(`/wechat/${parseRecordId(record.value!.url)}/`, {
     ...result.value
   })
 }

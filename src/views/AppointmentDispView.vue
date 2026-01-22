@@ -1,38 +1,23 @@
 <template>
   <n-space vertical>
-    <n-card v-if="loadingStatus == 'success' && isAppointmentActive">
+    <n-card v-if="loadingStatus == 'success' && store.records?.length && isAppointmentActive">
       <AppointmentDisp :data="store.records![0]" />
     </n-card>
 
     <n-skeleton v-else-if="loadingStatus == 'loading'" />
 
-    <n-result
-      v-else
-      status="404"
-      title="无活跃预约"
-      description="目前如此, 但谁又能预知未来"
-      style="margin: 16px 0"
-    />
+    <n-result v-else status="404" title="无活跃预约" description="目前如此, 但谁又能预知未来" style="margin: 16px 0" />
 
-    <n-button
-      style="width: 100%"
-      @click="
-        () => {
-          router.push('/history')
-        }
-      "
-      >查看历史预约</n-button
-    >
-    <n-button
-      style="width: 100%"
-      type="primary"
-      @click="
-        () => {
-          router.push('/new')
-        }
-      "
-      >创建新预约</n-button
-    >
+    <n-button style="width: 100%" @click="
+      () => {
+        router.push('/history')
+      }
+    ">查看历史预约</n-button>
+    <n-button style="width: 100%" type="primary" @click="
+      () => {
+        router.push('/new')
+      }
+    ">创建新预约</n-button>
   </n-space>
 </template>
 

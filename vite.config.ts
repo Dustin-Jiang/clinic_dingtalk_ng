@@ -32,15 +32,33 @@ export default defineConfig({
           })
         }
       },
-      '/api': {
-        target: 'http://127.0.0.1:25000',
+      '/user': {
+        target: 'https://clinic-bitnp.info.bit.edu.cn',
         changeOrigin: true,
         configure: (proxy) => {
           proxy.on("proxyReq", (proxyReq) => {
-            proxyReq.setHeader("origin", "http://127.0.0.1:25000")
+            proxyReq.setHeader("origin", "https://clinic-bitnp.info.bit.edu.cn")
           })
         }
-      }
+      },
+      // '/proxy': {
+      //   target: 'http://127.0.0.1:25000',
+      //   changeOrigin: true,
+      //   configure: (proxy) => {
+      //     proxy.on("proxyReq", (proxyReq) => {
+      //       proxyReq.setHeader("origin", "http://127.0.0.1:25000")
+      //     })
+      //   }
+      // },
+      // '/user': {
+      //   target: 'http://127.0.0.1:25000',
+      //   changeOrigin: true,
+      //   configure: (proxy) => {
+      //     proxy.on("proxyReq", (proxyReq) => {
+      //       proxyReq.setHeader("origin", "http://127.0.0.1:25000")
+      //     })
+      //   }
+      // }
     }
   }
 })

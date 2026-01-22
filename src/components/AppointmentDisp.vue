@@ -12,6 +12,13 @@
       </n-text>
       <n-text>请在到达诊所后向工作人员展示</n-text>
     </div>
+    <div v-if="isEditVisible">
+      <n-button style="width: 100%;" @click="
+        () => {
+          router.push('/edit/' + recordId)
+        }
+      ">编辑预约</n-button>
+    </div>
     <div v-if="isRejectReasonVisible">
       <div>
         <n-text strong>拒绝原因</n-text>
@@ -27,6 +34,9 @@ import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { RecordStatus } from '@/utils/constants'
 import { productionConfig } from '@/utils/config'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   data: Object as PropType<API.Record>
@@ -51,5 +61,11 @@ const recordUrl = computed(() => {
 const isRejectReasonVisible = computed(() => {
   return props.data!.status == RecordStatus.APPOINTMENT_REJECTED &&
     !!props.data!.reject_reason
+})
+
+const isEditVisible = computed(() => {
+  return props.data!.status == RecordStatus.APPOINTMENT_PENDING ||
+    props.data!.status == RecordStatus.PROCESS_PENDING ||
+    props.data!.status == RecordStatus.APPOINTMENT_CONFIRMED
 })
 </script>

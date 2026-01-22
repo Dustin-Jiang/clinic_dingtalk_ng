@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { ref } from 'vue';
 
 defineEmits(["prev", "next"])
@@ -66,4 +66,14 @@ watch(result, () => {
     }
   })
 }, { deep: true })
+
+onMounted(() => {
+  if (model.value?.name && model.value?.phone) {
+    formRef.value!.validate((errors) => {
+      if (!errors) {
+        validate.value = true;
+      }
+    })
+  }
+})
 </script>

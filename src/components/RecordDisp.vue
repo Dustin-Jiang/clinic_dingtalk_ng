@@ -38,6 +38,8 @@
 
 <script setup lang="ts">
 import Api, { ReqState } from '@/utils/Api'
+import type { AxiosResponse } from 'axios'
+import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
 
 const model = defineModel<{
@@ -50,21 +52,26 @@ const model = defineModel<{
   appointment_time: string
 }>("value")
 
-const emit = defineEmits(["prev", "next"])
+const props = defineProps<{
+  onSubmit: () => Promise<AxiosResponse<any, any>>
+}>();
+
+const emit = defineEmits(["prev", "next", "submit"])
+const message = useMessage()
 
 const submitStatus = ref<ReqState>(ReqState.IDLE)
 
 const handleSubmit = async () => {
   try {
     submitStatus.value = ReqState.PENDING
-    await Api.post('/wechat/', {
-      ...model.value
-    })
+    await props.onSubmit()
     submitStatus.value = ReqState.SUCCESS
+    message.success('提交成功')
     emit('next')
   }
   catch (e) {
     console.error('提交失败', e)
+    message.error(`提交失败，${e}`)
     submitStatus.value = ReqState.ERROR
   }
 }

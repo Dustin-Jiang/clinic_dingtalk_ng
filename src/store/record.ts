@@ -10,7 +10,12 @@ export const getRecords = async () => {
   try {
     // TODO: @Dustin-Jiang: 后端返回的有count字段，但是data不是list，而是单个对象
     const working = (await Api.get<API.IWorkingRecord>('/wechat/working/')).data
-    store.records = [working.data]
+    if (working.count > 0 && working.data) {
+      store.records = [working.data]
+    }
+    else {
+      store.records = []
+    }
     next.value = '/wechat/finish/'
     getNextRecords()
   } catch {

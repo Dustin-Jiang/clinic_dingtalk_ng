@@ -25,8 +25,8 @@
       <n-form-item label="选择地点" required>
         <n-list hoverable clickable style="width: 100%" bordered v-if="locations && locations?.length > 0">
           <n-list-item v-for="(location, idx) in locations" v-bind:key="idx" @click="() => {
-            if (choice === idx) choice = -1
-            else choice = idx
+            if (choice === location?.campus) choice = undefined
+            else choice = location?.campus
           }">
             <n-thing :title="location?.campus">
               <template #description>
@@ -39,7 +39,7 @@
               <p>容量: {{ `${location?.count} / ${location?.capacity}` }}</p>
             </n-thing>
             <template #suffix>
-              <n-collapse-transition :show="idx === choice">
+              <n-collapse-transition :show="location?.campus === choice">
                 <n-icon style="height: 1.6rem; width: 1.6rem; ">
                   <CheckCircleFilled style="font-size: 1.6rem; color: var(--primary-color); " />
                 </n-icon>
@@ -68,8 +68,10 @@ import CheckCircleFilled from "@vicons/material/CheckCircleFilled";
 import { watch } from "vue";
 import { watchEffect } from "vue";
 
+const model = defineModel<{ date: string, location: string }>("value")
+
 defineEmits(["prev", "next"])
-const date = ref<number | null>((new Date()).getTime())
+const date = ref<number>((model.value?.date ? new Date(model.value.date).getTime() : (new Date()).getTime()))
 
 const isDateDisabled = (date: number) => {
   const now = new Date()
@@ -104,16 +106,16 @@ const locations = computed(() => {
   }).filter((location) => location)
 })
 
-const choice = ref(-1)
+const choice = ref<string | undefined>(model.value?.location ?? undefined)
 
 const campus = computed(() => {
-  if (choice.value === -1) return ''
-  return locations.value![choice.value]!.campus
+  if (choice.value === undefined) return ''
+  return choice.value
 })
 
 watch(date, (d, old) => {
   if (old !== d) {
-    choice.value = -1
+    choice.value = undefined
   }
   return d
 })
@@ -125,9 +127,7 @@ store.campuses?.forEach((campus) => {
 
 console.debug("address: ", address)
 
-const validate = computed(() => choice.value !== -1)
-
-const model = defineModel<{ date: string, location: string }>("value")
+const validate = computed(() => choice.value !== undefined)
 
 watchEffect(() => {
   const dateSelected = new Date(date.value ?? '')

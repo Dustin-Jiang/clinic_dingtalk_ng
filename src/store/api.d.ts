@@ -88,7 +88,7 @@ namespace API {
 
   interface IWorkingRecord {
     count: number
-    data: Record
+    data?: Record
   }
 
   type RecordDesc = {
