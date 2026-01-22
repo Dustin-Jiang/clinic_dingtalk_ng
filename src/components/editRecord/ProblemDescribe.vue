@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import RepairComment from '@/components/RepairComment.vue'
+import RepairComment from '@/components/editRecord/RepairComment.vue'
 import store from '@/store';
 import { computed, watch, ref, watchEffect, onMounted } from 'vue';
 

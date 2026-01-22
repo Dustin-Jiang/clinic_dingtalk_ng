@@ -2,16 +2,11 @@
   <MainView>
     <n-space vertical>
       <n-space>
-        <n-button
-          circle
-          style="width: 48px; height: 48px"
-          quaternary
-          @click="
-            () => {
-              router.back()
-            }
-          "
-        >
+        <n-button circle style="width: 48px; height: 48px" quaternary @click="
+          () => {
+            router.back()
+          }
+        ">
           <n-icon style="height: 1.4rem; width: 1.4rem">
             <ArrowBackFilled style="font-size: 1.4rem" />
           </n-icon>
@@ -19,17 +14,12 @@
         <n-h1 style="padding: 0 8px">历史预约</n-h1>
       </n-space>
       <n-space vertical v-if="loadingStatus == 'success'">
-        <n-card v-for="result in store.records!" v-bind:key="result.id">
+        <n-card v-for="result in store.records!" v-bind:key="result.url">
           <AppointmentDisp :data="result" />
         </n-card>
       </n-space>
 
-      <n-result
-        v-else-if="loadingStatus == 'empty'"
-        status="404"
-        title="无预约历史"
-        description="初次相见, 请多多关照"
-      />
+      <n-result v-else-if="loadingStatus == 'empty'" status="404" title="无预约历史" description="初次相见, 请多多关照" />
     </n-space>
   </MainView>
 </template>

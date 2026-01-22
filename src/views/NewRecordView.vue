@@ -56,11 +56,11 @@
 <script setup lang="ts">
 import MainView from '@/views/MainView.vue'
 import ArrowBackFilled from '@vicons/material/ArrowBackFilled'
-import ProblemDescribe from '@/components/ProblemDescribe.vue'
+import ProblemDescribe from '@/components/editRecord/ProblemDescribe.vue'
 import PersonalInfo from '@/components/PersonalInfo.vue'
-import LocationSelect from '@/components/LocationSelect.vue'
-import EULA from '@/components/EULA.vue'
-import RecordDisp from '@/components/RecordDisp.vue'
+import LocationSelect from '@/components/editRecord/LocationSelect.vue'
+import EULA from '@/components/editRecord/EULA.vue'
+import RecordDisp from '@/components/editRecord/RecordDisp.vue'
 
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
