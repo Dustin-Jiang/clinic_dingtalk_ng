@@ -13,11 +13,16 @@
       <n-text>请在到达诊所后向工作人员展示</n-text>
     </div>
     <div v-if="isEditVisible">
-      <n-button style="width: 100%;" @click="
-        () => {
-          router.push('/edit/' + recordId)
-        }
-      ">编辑预约</n-button>
+      <n-button style="width: 100%;" @click="() => {
+        router.push('/edit/' + recordId)
+      }">
+        <template #icon>
+          <NIcon>
+            <EditFilled />
+          </NIcon>
+        </template>
+        编辑预约
+      </n-button>
     </div>
   </n-space>
 </template>
@@ -29,6 +34,8 @@ import { computed } from 'vue'
 import { RecordStatus } from '@/utils/constants'
 import { productionConfig } from '@/utils/config'
 import { useRouter } from 'vue-router'
+import { NIcon } from 'naive-ui'
+import EditFilled from '@vicons/material/EditFilled'
 
 const router = useRouter()
 
