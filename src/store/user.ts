@@ -1,7 +1,5 @@
 import store from "@/store"
-import * as dd from 'dingtalk-jsapi'
 import { User } from "@/utils/Api"
-import type API from "@/store/api"
 
 const loadUser = async () => {
   console.debug("Authorizing user")
@@ -18,6 +16,7 @@ const loadUser = async () => {
     }
     catch (e) {
       console.debug("Authorizing with Dingtalk")
+      const dd = await import('dingtalk-jsapi')
       dd.ready(() => {
         dd.runtime.permission.requestAuthCode({
           corpId: findGetParameter('corpId')!,
