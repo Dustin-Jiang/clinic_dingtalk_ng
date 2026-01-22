@@ -55,7 +55,6 @@ namespace API {
   // /api/records
   type Record = {
     url: Url
-    id: number
     status: RecordStatus
 
     realname: string
@@ -85,6 +84,11 @@ namespace API {
     next: Url
     previous: Url
     results: Record[]
+  }
+
+  interface IWorkingRecord {
+    count: number
+    data: Record
   }
 
   type RecordDesc = {

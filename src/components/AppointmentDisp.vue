@@ -4,11 +4,11 @@
     <div v-if="isQrCodeVisible"
       style="justify-content: center; align-items: center; flex-direction: column; display: flex">
       <div style="padding: 8px 0 0 0">
-        <n-qr-code :value="props.data!.url" :size="120" :error-correction-level="'Q'"
+        <n-qr-code :value="recordUrl" :size="120" :error-correction-level="'Q'"
           style="padding: 8px; box-sizing: content-box" />
       </div>
       <n-text style="font-size: 2rem; font-weight: 600">
-        {{ props.data!.id }}
+        {{ recordId }}
       </n-text>
       <n-text>请在到达诊所后向工作人员展示</n-text>
     </div>
@@ -26,6 +26,7 @@ import type API from '@/store/api'
 import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { RecordStatus } from '@/utils/constants'
+import { productionConfig } from '@/utils/config'
 
 const props = defineProps({
   data: Object as PropType<API.Record>
@@ -37,6 +38,14 @@ const isQrCodeVisible = computed(() => {
     props.data!.status == RecordStatus.PROCESS_PENDING ||
     props.data!.status == RecordStatus.RESOLVING
   )
+})
+
+const recordId = computed(() => {
+  return props.data?.url.split("/").slice(-2)[0]
+})
+
+const recordUrl = computed(() => {
+  return productionConfig.frontend.baseUrl + productionConfig.frontend.recordUrl + recordId.value
 })
 
 const isRejectReasonVisible = computed(() => {

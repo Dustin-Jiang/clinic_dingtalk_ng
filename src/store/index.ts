@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import type API from '@/store/api'
 import Api from '@/utils/Api'
+import loadUser from './user'
 
 const store = reactive({
   user: {} as API.IUsers,
@@ -12,9 +13,9 @@ const store = reactive({
 })
 
 const load = async () => {
-  store.user = (await Api.get<API.IUsers>('/api/user/')).data
-  store.campuses = (await Api.get<API.Campus[]>('/api/campus/')).data
-  store.dateStatus = (await Api.get<API.DateStatus[]>('/api/date/')).data
+  store.campuses = (await Api.get<API.Campus[]>('/campus/')).data
+  store.dateStatus = (await Api.get<API.DateStatus[]>('/date/')).data
+  loadUser();
 }
 
 export default store

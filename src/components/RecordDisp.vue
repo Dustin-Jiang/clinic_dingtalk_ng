@@ -57,7 +57,7 @@ const submitStatus = ref<ReqState>(ReqState.IDLE)
 const handleSubmit = async () => {
   try {
     submitStatus.value = ReqState.PENDING
-    await Api.post('/api/wechat/', {
+    await Api.post('/wechat/', {
       ...model.value
     })
     submitStatus.value = ReqState.SUCCESS

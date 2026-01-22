@@ -23,15 +23,15 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
-      // '/api': {
-      //   target: 'https://clinic.bitnp.net',
-      //   changeOrigin: true,
-      //   configure: (proxy) => {
-      //     proxy.on("proxyReq", (proxyReq) => {
-      //       proxyReq.setHeader("origin", "https://clinic.bitnp.net")
-      //     })
-      //   }
-      // }
+      '/proxy': {
+        target: 'https://clinic-bitnp.info.bit.edu.cn',
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq) => {
+            proxyReq.setHeader("origin", "https://clinic-bitnp.info.bit.edu.cn")
+          })
+        }
+      },
       '/api': {
         target: 'http://127.0.0.1:25000',
         changeOrigin: true,

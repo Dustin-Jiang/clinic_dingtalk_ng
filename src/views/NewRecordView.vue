@@ -11,7 +11,7 @@
       <n-h1 style="padding: 0 8px">预约电脑诊所</n-h1>
     </n-space>
 
-    <div style="overflow: auto; padding: 8px; " v-if="loadingStatus === 'success'">
+    <div style="overflow: auto; padding: 8px; " v-if="loadingStatus === ReqState.SUCCESS">
       <n-steps :current="step" vertical>
         <n-step title="描述问题">
           <n-collapse-transition :show="step === 1">
@@ -59,10 +59,11 @@ import { ref, onMounted } from 'vue'
 import store from '@/store'
 import { getProbDescs } from '@/store/probDescs'
 import { computed } from 'vue'
+import { ReqState } from '@/utils/Api'
 
 const router = useRouter()
 const step = ref(1)
-const loadingStatus = ref<'loading' | 'success' | 'error'>('loading')
+const loadingStatus = ref<ReqState>(ReqState.IDLE)
 
 const probDescs = ref<{
   modelName: string,
@@ -90,12 +91,12 @@ const locationSelect = ref<{ date: string, location: string }>({
 onMounted(async () => {
   if (!store.probDescs) {
     if (!await getProbDescs()) {
-      loadingStatus.value = 'error'
+      loadingStatus.value = ReqState.ERROR
       return
     }
   }
 
-  loadingStatus.value = 'success'
+  loadingStatus.value = ReqState.SUCCESS
 })
 
 const result = computed(() => {

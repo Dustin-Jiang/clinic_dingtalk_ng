@@ -9,7 +9,7 @@
     </template>
     <template #header> {{ props.data?.realname ?? '无名氏' }}</template>
     <template #header-extra>
-      <n-text depth="3">{{ `#${props.data?.id}` }} </n-text>
+      <n-text depth="3">{{ `#${recordId}` }} </n-text>
     </template>
     <template #description> {{ props.data?.appointment_time }}</template>
     {{ props.data?.model }}
@@ -24,7 +24,7 @@
 
 <script setup lang="tsx">
 import type API from '@/store/api'
-import type { PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { RecordStatus } from '@/utils/constants'
 
@@ -39,6 +39,10 @@ import HandyManFilled from '@vicons/material/HandyManFilled'
 
 const props = defineProps({
   data: Object as PropType<API.Record>
+})
+
+const recordId = computed(() => {
+  return props.data?.url.split("/").slice(-2)[0]
 })
 
 const StatusAvatar = () => {
